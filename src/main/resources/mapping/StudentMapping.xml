@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.dao.StudentMapping">
+    <select id="searchAllStudent" resultType="Student">
+        select *from webconsql
+        <where>
+            <if test="student_id!=null">
+                 student_id = #{student_id}
+            </if>
+        </where>
+    </select>
+    <insert id="addOneStudent" parameterType="Student">
+        insert into webconsql (student_id, name, birth, area, sex)
+        values (#{student_id}, #{name }, #{birth}, #{area}, #{sex});
+    </insert>
+
+    <update id="updateOneStudent" parameterType="student">
+        update webconsql
+        set birth=#{birth},
+            name=#{name},
+            area=#{area},
+            sex=#{sex}
+        where student_id = #{student_id};
+    </update>
+    <delete id="deleteOneStudent" parameterType="int">
+        delete
+        from webconsql
+        where student_id = #{student_id};
+    </delete>
+
+
+    <select id="search" resultType="Student">
+        select * from webconsql
+        <where>
+            <if test="startDate !=null">
+                <![CDATA[ and DATE_FORMAT(birth,'%y-%m-%d')>=DATE_FORMAT(#{startDate},'%y-%m-%d')]]>
+            </if>
+            <if test="endDate !=null">
+                <![CDATA[ and DATE_FORMAT(birth,'%y-%m-%d')<=DATE_FORMAT(#{endDate},'%y-%m-%d')]]>
+            </if>
+            <if test="keyWords !=null">
+                and name like CONCAT('%',#{keyWords},'%')
+            </if>
+        </where>
+        order by birth desc
+    </select>
+</mapper>
